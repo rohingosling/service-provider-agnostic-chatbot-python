@@ -1,0 +1,90 @@
+#---------------------------------------------------------------------------------------------------------------------
+# Conversation Agent Reference Application -- configuration.
+#
+# Every setting below is optional: 
+#
+# This file is merged over the application's built-in defaults, so a missing file, section, or key falls back
+# to the default shown. The file is read-only at runtime. All paths are relative to the project root.
+#
+# Available Models -- Updated for 2026:
+#
+#   Set [provider].name to the model's vendor, and [model].name to one of the ids below.
+#
+#   OpenAI ( provider = "openai" ):
+#
+#   - gpt-4o       ( fast, general-purpose )
+#   - gpt-4o-mini  ( cheaper / faster )
+#   - gpt-4.1      ( strong general-purpose model )
+#   - gpt-4.1-mini ( cheaper gpt-4.1 )
+#   - o4-mini      ( reasoning; uses reasoning_effort, not temperature )
+#
+#   Anthropic ( provider = "anthropic" ):
+#
+#   - claude-opus-4-8   ( default; most capable; uses effort, not temperature )
+#   - claude-opus-4-7   ( previous-generation Opus; uses effort )
+#   - claude-sonnet-4-6 ( faster / cheaper; supports temperature )
+#   - claude-haiku-4-5  ( fastest / cheapest; supports temperature )
+#   - claude-fable-5    ( most capable overall; uses effort; premium pricing )
+#
+#   Google Gemini ( provider = "gemini" -- not wired up yet; needs a Gemini provider ):
+#
+#   - gemini-2.5-pro        ( most capable )
+#   - gemini-2.5-flash      ( faster / cheaper )
+#   - gemini-2.5-flash-lite ( fastest / cheapest )
+#   - gemini-2.0-flash      ( previous-generation Flash )
+#
+#---------------------------------------------------------------------------------------------------------------------
+
+[application]
+
+agent_name_user       = "User"          # terminal label for the human
+agent_name_ai         = "AI"            # terminal label for the agent
+introduction_behavior = "unprompted"    # none | unprompted | prompted
+
+[provider]
+
+name = "anthropic"                      # registry key selecting the backend
+
+[model]
+
+name        = "claude-sonnet-4-6"       # backend-specific model identifier
+max_tokens  = 1024                      # response token cap
+temperature = 0.7                       # 0.0-2.0 (OpenAI); Claude Opus 4.8 ignores this -- it uses effort, not temperature
+streaming   = true                      # stream deltas vs. one complete response
+
+[rendering]
+
+rich_enabled = true                     # false -> plain-text fallback
+
+[prompts]
+
+system_prompt         = "data/system_prompt.txt"
+introduction_prompt   = "data/prompts/introduction_prompt.txt"
+introduction_response = "data/prompts/introduction_response.txt"
+
+[logging]
+
+level          = "info"                 # debug | info | warning | error
+file_enabled   = true                   # also write rotating logs to log/
+directory      = "log"
+token_tracking = false                  # log per-response and running session token counts
+
+[chat_log]
+
+directory             = "chat_log"
+file_prefix           = "chat_log_"
+file_extension        = ".txt"
+include_system_prompt = false           # include the system prompt in saved logs
+
+[colors]
+
+# Each value is a Rich colour: an ANSI-palette name ( e.g. "blue", "bright_red" ), an 8-bit "color(N)", a hex "#rrggbb", or "rgb(r,g,b)".
+# Named palette colours follow the terminal's own theme. An invalid value falls back to the built-in default shown.
+
+general     = "white"                   # light grey -- default / general text
+header      = "bright_white"            # white -- section headers ( "Application:", "Model:" )
+field_value = "bright_black"            # dark grey -- banner field values
+ai_prompt   = "bright_red"              # light red -- AI prompt label, e.g. "[AI]"
+ai_text     = "bright_black"            # red -- AI response text ( before Markdown recolours it )
+user_prompt = "bright_blue"             # light blue -- user prompt label, e.g. "[User]"
+user_text   = "bright_black"            # blue -- echoed user input
